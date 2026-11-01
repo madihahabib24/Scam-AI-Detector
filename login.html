@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | AI Scam Detector</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+            background: #050b12;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 430px;
+            padding: 35px;
+            background: linear-gradient(145deg, #142536, #091522);
+            border: 1px solid #00e88f55;
+            border-radius: 20px;
+            box-shadow: 0 0 30px #00ff8825;
+        }
+
+        .login-logo {
+            display: block;
+            width: 105px;
+            height: 105px;
+            object-fit: contain;
+            margin: 0 auto 15px;
+            filter: drop-shadow(0 0 12px #00ff88);
+        }
+
+        .login-box h1 {
+            color: #00e88f;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .login-box p {
+            color: #c4ced8;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-box label {
+            display: block;
+            color: white;
+            margin: 16px 0 7px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #526477;
+            border-radius: 8px;
+            background: #0c1725;
+            color: white;
+            outline: none;
+        }
+
+        .login-box input:focus {
+            border-color: #00e88f;
+            box-shadow: 0 0 10px #00e88f35;
+        }
+
+        .login-box button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #00d982;
+            color: #071b16;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-box button:hover {
+            background: #00f5a0;
+            box-shadow: 0 0 18px #00ff8870;
+        }
+
+        .login-box button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 22px;
+            color: #00e88f;
+            text-decoration: none;
+        }
+
+        #loginMessage {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-page">
+        <div class="login-box">
+
+            <img src="logo.jpeg" alt="AI Scam Detector Shield" class="login-logo">
+
+            <h1>Welcome Back</h1>
+            <p>Login to AI Scam Detector</p>
+
+            <form id="loginForm">
+
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                    required
+                >
+
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button type="submit" id="loginButton">
+                    LOGIN
+                </button>
+
+                <div id="loginMessage" role="status"></div>
+
+            </form>
+
+            <a href="index.html" class="back-home">
+                ← Back to Home
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const message = document.getElementById("loginMessage");
+            const button = document.getElementById("loginButton");
+
+            message.textContent = "Please wait...";
+            message.style.color = "#00e88f";
+            button.disabled = true;
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/api/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    message.textContent = "Login successful!";
+                    message.style.color = "#00e88f";
+
+                    setTimeout(function() {
+                        window.location.href = "dashboard.html";
+                    }, 1000);
+
+                } else {
+                    message.textContent = data.error || "Invalid email or password.";
+                    message.style.color = "#ff5555";
+                    button.disabled = false;
+                }
+
+            } catch (error) {
+                message.textContent = "Backend connection failed!";
+                message.style.color = "#ff5555";
+                button.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>

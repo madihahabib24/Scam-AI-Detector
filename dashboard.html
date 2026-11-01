@@ -1,0 +1,540 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Security Dashboard | AI Scam Detector</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #050b12;
+    color: #ffffff;
+}
+
+.dashboard {
+    min-height: 100vh;
+    padding: 30px 5%;
+}
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 35px;
+    padding: 22px;
+    background: linear-gradient(145deg, #142536, #091522);
+    border: 1px solid #00e88f55;
+    border-radius: 16px;
+    box-shadow: 0 0 20px #00ff8815;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.brand img {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px #00ff88);
+}
+
+.dash-header h1 {
+    color: #00e88f;
+    margin: 0 0 8px;
+}
+
+.dash-header p {
+    color: #c4ced8;
+    margin: 0;
+}
+
+.dash-header a,
+.dash-links a {
+    color: #00e88f;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.dash-header a:hover,
+.dash-links a:hover {
+    color: white;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card,
+.dashboard-panel {
+    background: linear-gradient(145deg, #142536, #091522);
+    border: 1px solid #00e88f40;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 0 20px #00ff8810;
+}
+
+.stat-card h3 {
+    color: #c4ced8;
+    font-size: 15px;
+}
+
+.stat-card h2 {
+    color: #00e88f;
+    font-size: 34px;
+    margin-bottom: 0;
+}
+
+.dashboard-panel {
+    margin-bottom: 25px;
+}
+
+.dashboard-panel h2 {
+    color: #00e88f;
+    margin-top: 0;
+}
+
+.dashboard-panel p {
+    color: #c4ced8;
+    line-height: 1.6;
+}
+
+.scanner-input {
+    width: 100%;
+    padding: 15px;
+    margin: 18px 0;
+    background: #0c1725;
+    border: 1px solid #526477;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    outline: none;
+}
+
+.scanner-input:focus {
+    border-color: #00e88f;
+    box-shadow: 0 0 10px #00e88f35;
+}
+
+.scan-btn {
+    padding: 14px 28px;
+    background: #00d982;
+    color: #071b16;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.scan-btn:hover {
+    background: #00f5a0;
+    box-shadow: 0 0 18px #00ff8870;
+}
+
+.scan-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+#scanMessage {
+    margin-top: 20px;
+    color: #00e88f;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.result-box {
+    margin-top: 18px;
+    padding: 18px;
+    background: #0c1725;
+    border: 1px solid #00e88f60;
+    border-radius: 10px;
+}
+
+.result-box h3 {
+    color: #00e88f;
+}
+
+.result-box p {
+    color: #d4dee8;
+    overflow-wrap: anywhere;
+}
+
+.history-item {
+    padding: 15px;
+    margin-top: 12px;
+    background: #0c1725;
+    border: 1px solid #34475a;
+    border-radius: 9px;
+    color: #c4ced8;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.disclaimer {
+    font-size: 13px;
+    color: #aab8c5;
+    margin-top: 18px;
+}
+
+.dash-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+@media (max-width: 600px) {
+    .dashboard {
+        padding: 20px 4%;
+    }
+
+    .brand img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .dash-header h1 {
+        font-size: 23px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="dashboard">
+
+    <header class="dash-header">
+
+        <div class="brand">
+            <img src="logo.jpeg" alt="AI Scam Detector Shield">
+
+            <div>
+                <h1>AI Security Dashboard</h1>
+                <p>Your Online Protection Center</p>
+            </div>
+        </div>
+
+        <a href="profile.html">My Profile →</a>
+
+    </header>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <h3>Total Scans</h3>
+            <h2 id="totalScans">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <h3>Low Risk Scans</h3>
+            <h2 id="safeScans">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <h3>Suspicious Scans</h3>
+            <h2 id="suspiciousScans">0</h2>
+        </div>
+
+    </section>
+
+    <section class="dashboard-panel">
+
+        <h2>🔗 AI URL Scanner</h2>
+
+        <p>
+            Enter a website URL below. Our trained Machine Learning
+            model will analyze it for possible phishing signs.
+        </p>
+
+        <input
+            type="url"
+            id="urlInput"
+            class="scanner-input"
+            placeholder="https://example.com"
+            autocomplete="url"
+        >
+
+        <button
+            class="scan-btn"
+            id="scanButton"
+            onclick="scanInput()"
+        >
+            SCAN URL
+        </button>
+
+        <div id="scanMessage" aria-live="polite"></div>
+
+        <p class="disclaimer">
+            Note: This scanner uses a trained Machine Learning model.
+            Results are advisory and do not guarantee website safety.
+        </p>
+
+    </section>
+
+    <section class="dashboard-panel">
+
+        <h2>📋 Recent Activity</h2>
+
+        <div id="historyMessage">
+            <p>Loading scan history...</p>
+        </div>
+
+    </section>
+
+    <section class="dashboard-panel">
+
+        <h2>Quick Navigation</h2>
+
+        <div class="dash-links">
+            <a href="index.html">Home</a>
+            <a href="profile.html">My Profile</a>
+            <a href="login.html">Login</a>
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+const API = "http://127.0.0.1:5000";
+
+async function loadHistory() {
+
+    const history = document.getElementById("historyMessage");
+
+    try {
+
+        const response = await fetch(API + "/api/history", {
+            credentials: "include"
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            history.textContent =
+                data.error || "Please login to view scan history.";
+            return;
+        }
+
+        const scans = Array.isArray(data)
+            ? data
+            : (data.history || []);
+
+        document.getElementById("totalScans").textContent =
+            scans.length;
+
+        const low = scans.filter(
+            scan => scan.risk_level === "Low"
+        ).length;
+
+        document.getElementById("safeScans").textContent = low;
+
+        document.getElementById("suspiciousScans").textContent =
+            scans.length - low;
+
+        history.innerHTML = "";
+
+        if (scans.length === 0) {
+            history.textContent =
+                "No scans have been performed yet.";
+            return;
+        }
+
+        scans.forEach(scan => {
+
+            const item = document.createElement("div");
+
+            item.className = "history-item";
+
+            item.textContent =
+                "Input: " + (scan.input || "N/A") +
+                " | Verdict: " + (scan.verdict || "N/A") +
+                " | Risk: " + (scan.risk_level || "N/A") +
+                " | Date: " + (scan.scan_date || "N/A");
+
+            history.appendChild(item);
+
+        });
+
+    } catch (error) {
+
+        history.textContent =
+            "Unable to load history. Check backend connection.";
+
+    }
+}
+
+
+async function scanInput() {
+
+    const input = document.getElementById("urlInput").value.trim();
+
+    const message = document.getElementById("scanMessage");
+
+    const button = document.getElementById("scanButton");
+
+    if (!input) {
+        message.textContent = "Please enter a URL first.";
+        return;
+    }
+
+    try {
+
+        const parsedURL = new URL(input);
+
+        if (!["http:", "https:"].includes(parsedURL.protocol)) {
+            message.textContent =
+                "Please enter a valid HTTP or HTTPS URL.";
+            return;
+        }
+
+    } catch {
+
+        message.textContent =
+            "Please enter a complete URL, e.g. https://example.com";
+        return;
+
+    }
+
+    button.disabled = true;
+
+    message.textContent = "AI is analyzing your URL. Please wait...";
+
+    try {
+
+        const response = await fetch(API + "/api/scan", {
+
+            method: "POST",
+
+            credentials: "include",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                input: input,
+                type: "url"
+            })
+
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || "Scan failed.");
+        }
+
+        message.innerHTML = "";
+
+        const resultBox = document.createElement("div");
+        resultBox.className = "result-box";
+
+        const heading = document.createElement("h3");
+        heading.textContent = "AI Scan Result";
+        resultBox.appendChild(heading);
+
+        const details = [
+            "Verdict: " + (result.verdict || "Not available"),
+            "Risk Level: " + (result.risk_level || "Not available"),
+            "Warning Signs: " + (result.risk_count ?? 0),
+            "Input Type: " + (result.input_type || "URL"),
+            "Analysis: " + (result.notes || "Analysis completed.")
+        ];
+
+        details.forEach(detail => {
+
+            const paragraph = document.createElement("p");
+            paragraph.textContent = detail;
+            resultBox.appendChild(paragraph);
+
+        });
+
+        if (result.risk_signals) {
+
+            const title = document.createElement("h4");
+            title.textContent = "Detected Warning Signs";
+            resultBox.appendChild(title);
+
+            let signals = [];
+
+            if (Array.isArray(result.risk_signals)) {
+                signals = result.risk_signals;
+            } else if (typeof result.risk_signals === "object") {
+                signals = Object.entries(result.risk_signals)
+                    .filter(([key, value]) => Boolean(value))
+                    .map(([key, value]) =>
+                        typeof value === "string" ? value : key
+                    );
+            }
+
+            if (signals.length === 0) {
+
+                const paragraph = document.createElement("p");
+                paragraph.textContent =
+                    "No additional warning signs returned.";
+                resultBox.appendChild(paragraph);
+
+            } else {
+
+                signals.forEach(signal => {
+
+                    const paragraph = document.createElement("p");
+                    paragraph.textContent = "• " + signal;
+                    resultBox.appendChild(paragraph);
+
+                });
+
+            }
+        }
+
+        if (result.disclaimer) {
+
+            const note = document.createElement("p");
+            note.className = "disclaimer";
+            note.textContent = result.disclaimer;
+            resultBox.appendChild(note);
+
+        }
+
+        message.appendChild(resultBox);
+
+        await loadHistory();
+
+    } catch (error) {
+
+        message.textContent = "Error: " + error.message;
+
+    } finally {
+
+        button.disabled = false;
+
+    }
+
+}
+
+loadHistory();
+
+</script>
+
+</body>
+</html>
