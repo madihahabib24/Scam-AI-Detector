@@ -47,6 +47,11 @@ def home():
     return send_from_directory(BASE_DIR, "index.html")
 
 
+@app.route("/index.html")
+def home_page():
+    return send_from_directory(BASE_DIR, "index.html")
+
+
 @app.route("/login")
 @app.route("/login.html")
 def login_page():
@@ -71,11 +76,11 @@ def profile_page():
     return send_from_directory(BASE_DIR, "profile.html")
 
 
-# Serve CSS, JavaScript and image files only.
+# Serve website files.
 @app.route("/<path:filename>")
 def website_assets(filename):
     allowed_extensions = (
-        ".css", ".js", ".jpeg", ".jpg",
+        ".html", ".css", ".js", ".jpeg", ".jpg",
         ".png", ".svg", ".webp", ".ico",
         ".woff", ".woff2", ".ttf"
     )
@@ -96,7 +101,6 @@ def connect_db():
 
 def create_table():
     with connect_db() as connection:
-
         connection.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -134,7 +138,6 @@ def health():
 
 @app.route("/api/register", methods=["POST"])
 def register():
-
     data = request.get_json(silent=True) or {}
 
     name = data.get("name", "").strip()
@@ -142,9 +145,7 @@ def register():
     password = data.get("password", "")
 
     if not name or not email or not password:
-        return jsonify({
-            "error": "All fields are required"
-        }), 400
+        return jsonify({"error": "All fields are required"}), 400
 
     if len(password) < 8:
         return jsonify({
@@ -168,16 +169,13 @@ def register():
         }), 201
 
     except sqlite3.IntegrityError:
-        return jsonify({
-            "error": "Email already registered"
-        }), 409
+        return jsonify({"error": "Email already registered"}), 409
 
 
 # ---------------- LOGIN ----------------
 
 @app.route("/api/login", methods=["POST"])
 def login():
-
     data = request.get_json(silent=True) or {}
 
     email = data.get("email", "").strip().lower()
@@ -190,30 +188,22 @@ def login():
         ).fetchone()
 
     if user and check_password_hash(user["password"], password):
-
         session.clear()
         session["user_id"] = user["id"]
 
-        return jsonify({
-            "message": "Login successful"
-        })
+        return jsonify({"message": "Login successful"})
 
-    return jsonify({
-        "error": "Invalid email or password"
-    }), 401
+    return jsonify({"error": "Invalid email or password"}), 401
 
 
 # ---------------- PROFILE ----------------
 
 @app.route("/api/profile", methods=["GET"])
 def get_profile():
-
     user_id = session.get("user_id")
 
     if not user_id:
-        return jsonify({
-            "error": "Please login first"
-        }), 401
+        return jsonify({"error": "Please login first"}), 401
 
     with connect_db() as connection:
         user = connection.execute(
@@ -225,22 +215,17 @@ def get_profile():
         ).fetchone()
 
     if not user:
-        return jsonify({
-            "error": "User not found"
-        }), 404
+        return jsonify({"error": "User not found"}), 404
 
     return jsonify(dict(user))
 
 
 @app.route("/api/profile", methods=["PUT"])
 def update_profile():
-
     user_id = session.get("user_id")
 
     if not user_id:
-        return jsonify({
-            "error": "Please login first"
-        }), 401
+        return jsonify({"error": "Please login first"}), 401
 
     data = request.get_json(silent=True) or {}
 
@@ -248,9 +233,7 @@ def update_profile():
     phone = data.get("phone", "").strip()
 
     if not name:
-        return jsonify({
-            "error": "Name is required"
-        }), 400
+        return jsonify({"error": "Name is required"}), 400
 
     with connect_db() as connection:
         connection.execute(
@@ -262,28 +245,21 @@ def update_profile():
             (name, phone, user_id)
         )
 
-    return jsonify({
-        "message": "Profile updated successfully"
-    })
+    return jsonify({"message": "Profile updated successfully"})
 
 
 # ---------------- LOGOUT ----------------
 
 @app.route("/api/logout", methods=["POST"])
 def logout():
-
     session.clear()
-
-    return jsonify({
-        "message": "Logged out successfully"
-    })
+    return jsonify({"message": "Logged out successfully"})
 
 
 # ---------------- AI SCANNER ----------------
 
 @app.route("/api/scan", methods=["POST"])
 def scan():
-
     data = request.get_json(silent=True) or {}
 
     user_input = data.get("input", "").strip()
@@ -295,11 +271,9 @@ def scan():
         }), 400
 
     result = analyze_input(user_input, input_type)
-
     user_id = session.get("user_id")
 
     if user_id:
-
         with connect_db() as connection:
             connection.execute(
                 """
@@ -312,9 +286,7 @@ def scan():
                     user_input,
                     result["verdict"],
                     result["risk_level"],
-                    datetime.now().strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
+                    datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 )
             )
 
@@ -325,13 +297,10 @@ def scan():
 
 @app.route("/api/history", methods=["GET"])
 def scan_history():
-
     user_id = session.get("user_id")
 
     if not user_id:
-        return jsonify({
-            "error": "Please login first"
-        }), 401
+        return jsonify({"error": "Please login first"}), 401
 
     with connect_db() as connection:
         scans = connection.execute(
@@ -340,13 +309,10 @@ def scan_history():
             FROM scans
             WHERE user_id = ?
             ORDER BY id DESC
-            """,
-            (user_id,)
-        ).fetchall()
+            """
+        , (user_id,)).fetchall()
 
-    return jsonify([
-        dict(scan) for scan in scans
-    ])
+    return jsonify([dict(scan) for scan in scans])
 
 
 # Create database tables when Gunicorn imports this file.
