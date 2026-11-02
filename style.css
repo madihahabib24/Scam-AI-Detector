@@ -472,3 +472,34 @@ footer.visible {
         transition-duration: 0.01ms !important;
     }
 }
+.main-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    padding: 18px 30px;
+    flex-wrap: wrap;
+}
+
+.main-nav a {
+    text-decoration: none;
+    white-space: nowrap;
+}
+ 
+.ai-badge {
+    display: inline-block;
+    margin-bottom: 25px;
+    position: relative;
+    top: -40px;
+}
+.logo-img,
+.hero-shield {
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+.logo-img:hover,
+.hero-shield:hover {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 50px #00ff66)
+            drop-shadow(0 0 50px #00ff66);
+}
